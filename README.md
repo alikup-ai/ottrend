@@ -10,7 +10,7 @@ PI System, Ignition and OPC UA Historical Access all answer the same questions a
 
 Two gaps, one library.
 
-An agent that is allowed to write to a plant needs to know more than a tag's current value. *How fast has it been moving? How far has it drifted this shift? Was it in alarm while that happened?* Live reads cannot answer any of it, and the project that needs those answers — [otgate](https://github.com/alikup-ai/otgate), a process-aware policy gateway — currently judges rate of change against its own memory of what it last wrote, which is a weaker baseline than the plant's own history.
+An agent that is allowed to write to a plant needs to know more than a tag's current value. *How fast has it been moving? How far has it drifted this shift? Was it in alarm while that happened?* Live reads cannot answer any of it. [otgate](https://github.com/alikup-ai/otgate), a process-aware policy gateway, is the first consumer: its rate limit used to be judged against the tag's live value and otgate's own record of its last write, which are two points in time and blind to anything that happened between them — an operator ramping a setpoint and putting it back left no trace in either. With `history_rate` switched on it asks `ottrend` for the tag's own recorded rate and holds the process to the same limit.
 
 Separately, agents have no way to read a historian at all. [top-industrial-ai-agents](https://github.com/alikup-ai/top-industrial-ai-agents) lists "MCP server for PI System and the Ignition historian" as an open niche, verified empty on 2026-11-07.
 
