@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ottrend"
+version = "0.1.0"
+description = "One way to ask an industrial historian what a tag has been doing — PI, Ignition, OPC UA HA behind three primitives."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Ali K." }]
+keywords = ["historian", "pi-system", "ignition", "opc-ua", "mcp", "industrial", "trend"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+# The core is pure Python with no dependencies: MemoryTrend, the protocol and
+# the derived queries all run on a bare install. Every adapter that needs a
+# wire protocol brings its own extra.
+dependencies = []
+
+[project.optional-dependencies]
+opcua = ["asyncua>=1.0"]
+pi = ["httpx>=0.27"]
+ignition = ["httpx>=0.27"]
+mcp = ["mcp>=1.2.0,<2"]
+dev = ["pytest>=7.0", "pytest-asyncio>=0.23"]
+
+[project.urls]
+Homepage = "https://github.com/alikup-ai/ottrend"
+Repository = "https://github.com/alikup-ai/ottrend"
+Issues = "https://github.com/alikup-ai/ottrend/issues"
+Changelog = "https://github.com/alikup-ai/ottrend/commits/main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ottrend"]
+
+# Explicit allow-list rather than "everything git does not ignore": a stray
+# virtualenv in the working tree is how a 50 KB package becomes a 19 MB one,
+# and an allow-list cannot be broken by something nobody remembered to ignore.
+[tool.hatch.build.targets.sdist]
+include = [
+    "ottrend/",
+    "tests/",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "integration: tests against a real asyncua OPC UA server (needs the 'opcua' extra)",
+]
